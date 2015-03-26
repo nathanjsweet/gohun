@@ -6,9 +6,14 @@ void* new_hunspell(char* aff, char* dic)
   return h;
 }
 
-void free_list(void* h, char** sugg, int num)
+void delete_hunspell(void* h)
 {
-  ((Hunspell*)h)->free_list(&sugg, num);
+  delete h;
+}
+
+void free_list(void* h, char*** sugg, int num)
+{
+  ((Hunspell*)h)->free_list(sugg, num);
 }
 
 int check_suggestions(void* h, char* word, int* num, char*** sugg)
@@ -23,4 +28,40 @@ int check_suggestions(void* h, char* word, int* num, char*** sugg)
     return 0;
   }
     
+}
+
+int add_dic(void* h, char* dic)
+{
+  Hunspell *hun = (Hunspell*)h;
+  return hun->add_dic(dic) == 0 ? 1 : 0;
+}
+
+int add_word(void* h, char* word)
+{
+  Hunspell *hun = (Hunspell*)h;
+  return hun->add(word) == 0 ? 1 : 0;
+}
+
+int remove_word(void* h, char* word)
+{
+  Hunspell *hun = (Hunspell*)h;
+  return hun->remove(word) == 0 ? 1 : 0;
+}
+
+int stem(void* h, char* word, char*** sugg)
+{
+  Hunspell *hun = (Hunspell*)h;
+  return hun->stem(sugg, word);
+}
+
+int generate(void* h, char* word1, char* word2, char*** sugg)
+{
+  Hunspell *hun = (Hunspell*)h;
+  return hun->generate(sugg, word1, word2);
+}
+
+int analyze(void* h, char* word, char*** sugg)
+{
+  Hunspell *hun = (Hunspell*)h;
+  return hun->analyze(sugg, word);
 }
