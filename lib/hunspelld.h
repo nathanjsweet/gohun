@@ -1,5 +1,6 @@
-#include <hunspell.hxx>
-
+#ifdef __cplusplus
+extern "C" {
+  #endif
 void* new_hunspell(char*, char*);
 
 void delete_hunspell(void*);
@@ -17,3 +18,6 @@ int remove_word(void*, char*);
 int stem(void*, char*, char***);
 
 int generate(void*, char*, char*, char***);
+  #ifdef __cplusplus
+}
+#endif

@@ -1,14 +1,6 @@
-SOFLAGS=-fPIC
+SOFLAGS=-fPIC -03
 IDIR=-I./hunspell-distributed/src/hunspell/
-LIBS=-L./build/ -lhunspell
-all:
-	gofmt -e -s -w .
-	go vet .
-	$(CC) -g -fPIC -c -o lib/lib.o lib/lib.c
-	$(CC) -g -fPIC -shared -o liblib.so lib/lib.o
-	LD_LIBRARY_PATH=. go run main.go
-	cp liblib.so wrapper/
-	LD_LIBRARY_PATH=. go run main2.go
+LIBS=-L./build/ -lhunspell -lstdc++
 
 libobjects:
 	mkdir -p build
@@ -26,15 +18,15 @@ libobjects:
 	$(CXX) $(SOFLAGS) -c -o build/obj/strmgr.o hunspell-distributed/src/hunspell/strmgr.cxx
 	$(CXX) $(SOFLAGS) -c -o build/obj/suggestmgr.o hunspell-distributed/src/hunspell/suggestmgr.cxx
 
-libhunspell.so: libobjects
+libhunspell: libobjects
 	$(CXX) $(SOFLAGS) $(IDIR) -c -o build/obj/hunspelld.o lib/hunspelld.c
-	$(CXX) $(SOFLAGS) -shared -o build/libhunspell.so build/obj/hunspelld.o build/obj/affentry.o \
+	ar rcs build/libhunspell.a build/obj/hunspelld.o build/obj/affentry.o \
 		build/obj/affixmgr.o build/obj/csutil.o build/obj/dictmgr.o build/obj/filemgr.o \
 		build/obj/hashmgr.o build/obj/hunspell.o build/obj/hunzip.o build/obj/phonet.o \
 		build/obj/replist.o build/obj/strmgr.o build/obj/suggestmgr.o
 
-test.c: libhunspell.so
+test.c: libhunspell
 	$(CXX) $(IDIR) -o lib/test lib/test.c $(LIBS)
 clean:
 	rm -rf build
-	rm lib/test
+	rm -f lib/test

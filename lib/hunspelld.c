@@ -1,4 +1,5 @@
 #include "hunspelld.h"
+#include <hunspell.hxx>
 
 void* new_hunspell(char* aff, char* dic)
 {
