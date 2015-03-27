@@ -26,4 +26,4 @@ libhunspell: libobjects
 		$(OBJ)/replist.o $(OBJ)/strmgr.o $(OBJ)/suggestmgr.o
 
 test.c: libhunspell
-	$(CXX) $(IDIR) -o ./include/test ./include/test.c $(LIB)/libhunspell.a
+	$(CXX) $(IDIR) -o ./lib/test ./include/test.c $(LIB)/libhunspell.a
