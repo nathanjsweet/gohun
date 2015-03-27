@@ -1,4 +1,4 @@
-SOFLAGS=-fPIC -03
+SOFLAGS=-fPIC
 IDIR=-I./hunspell-distributed/src/hunspell/
 LIBS=-L./build/ -lhunspell -lstdc++
 
