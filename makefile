@@ -1,32 +1,29 @@
 SOFLAGS=-fPIC
 IDIR=-I./hunspell-distributed/src/hunspell/
-LIBS=-L./build/ -lhunspell -lstdc++
-
+LIB=./lib
+OBJ=$(LIB)/obj
 libobjects:
-	mkdir -p build
-	mkdir -p build/obj
-	$(CXX) $(SOFLAGS) -c -o build/obj/affentry.o hunspell-distributed/src/hunspell/affentry.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/affixmgr.o hunspell-distributed/src/hunspell/affixmgr.cxx	
-	$(CXX) $(SOFLAGS) -c -o build/obj/csutil.o hunspell-distributed/src/hunspell/csutil.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/dictmgr.o hunspell-distributed/src/hunspell/dictmgr.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/filemgr.o hunspell-distributed/src/hunspell/filemgr.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/hashmgr.o hunspell-distributed/src/hunspell/hashmgr.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/hunspell.o hunspell-distributed/src/hunspell/hunspell.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/hunzip.o hunspell-distributed/src/hunspell/hunzip.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/phonet.o hunspell-distributed/src/hunspell/phonet.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/replist.o hunspell-distributed/src/hunspell/replist.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/strmgr.o hunspell-distributed/src/hunspell/strmgr.cxx
-	$(CXX) $(SOFLAGS) -c -o build/obj/suggestmgr.o hunspell-distributed/src/hunspell/suggestmgr.cxx
+	mkdir -p $(LIB)
+	mkdir -p $(OBJ)
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/affentry.o hunspell-distributed/src/hunspell/affentry.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/affixmgr.o hunspell-distributed/src/hunspell/affixmgr.cxx	
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/csutil.o hunspell-distributed/src/hunspell/csutil.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/dictmgr.o hunspell-distributed/src/hunspell/dictmgr.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/filemgr.o hunspell-distributed/src/hunspell/filemgr.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/hashmgr.o hunspell-distributed/src/hunspell/hashmgr.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/hunspell.o hunspell-distributed/src/hunspell/hunspell.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/hunzip.o hunspell-distributed/src/hunspell/hunzip.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/phonet.o hunspell-distributed/src/hunspell/phonet.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/replist.o hunspell-distributed/src/hunspell/replist.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/strmgr.o hunspell-distributed/src/hunspell/strmgr.cxx
+	$(CXX) $(SOFLAGS) -c -o $(OBJ)/suggestmgr.o hunspell-distributed/src/hunspell/suggestmgr.cxx
 
 libhunspell: libobjects
-	$(CXX) $(SOFLAGS) $(IDIR) -c -o build/obj/hunspelld.o lib/hunspelld.c
-	ar rcs build/libhunspell.a build/obj/hunspelld.o build/obj/affentry.o \
-		build/obj/affixmgr.o build/obj/csutil.o build/obj/dictmgr.o build/obj/filemgr.o \
-		build/obj/hashmgr.o build/obj/hunspell.o build/obj/hunzip.o build/obj/phonet.o \
-		build/obj/replist.o build/obj/strmgr.o build/obj/suggestmgr.o
+	$(CXX) $(SOFLAGS) $(IDIR) -c -o $(OBJ)/hunspelld.o ./include/hunspelld.c
+	ar rcs $(LIB)/libhunspell.a $(OBJ)/hunspelld.o $(OBJ)/affentry.o \
+		$(OBJ)/affixmgr.o $(OBJ)/csutil.o $(OBJ)/dictmgr.o $(OBJ)/filemgr.o \
+		$(OBJ)/hashmgr.o $(OBJ)/hunspell.o $(OBJ)/hunzip.o $(OBJ)/phonet.o \
+		$(OBJ)/replist.o $(OBJ)/strmgr.o $(OBJ)/suggestmgr.o
 
 test.c: libhunspell
-	$(CXX) $(IDIR) -o lib/test lib/test.c $(LIBS)
-clean:
-	rm -rf build
-	rm -f lib/test
+	$(CXX) $(IDIR) -o ./include/test ./include/test.c $(LIB)/libhunspell.a

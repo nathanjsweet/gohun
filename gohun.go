@@ -1,45 +1,15 @@
-package main
+package gohun
 /*
+#cgo LDFLAGS: -L./lib/ -lhunspell -lstdc++
 #include <stdlib.h>
-#include "lib/hunspelld.h"
-#cgo LDFLAGS:-Lbuild/ -lhunspell -lstdc++
+#include "include/hunspelld.h"
+
 */
 import "C"
-
 import (
 	"unsafe"
-	"os"
-	"io/ioutil"
-	"log"
+	"reflect"
 )
-
-func main() {
-	file, err := os.Open("./lib/dictionaries/en_US.aff")
-	if err != nil {
-		log.Fatal(err)
-	}
-	aff, e := ioutil.ReadAll(file)
-	if e != nil {
-		log.Fatal(e)
-	}
-	file.Close()
-	file, err = os.Open("./lib/dictionaries/en_US.dic")
-	if err != nil {
-		log.Fatal(err)
-	}
-	dic, e2 := ioutil.ReadAll(file)
-	file.Close()
-	if e2 != nil {
-		log.Fatal(e2)
-	}
-
-	g := NewGohun(aff, dic)
-	b, l, r := g.CheckSuggestions("calor")
-	log.Println("calor spelled correctly? ", b)
-	for i := 0; i < l; i++ {
-		log.Println(r[i])
-	}
-}
 
 type Gohun struct{
 	hunspell unsafe.Pointer
@@ -55,17 +25,23 @@ func (g *Gohun) CheckSuggestions(word string) (bool, int, []string) {
 	w := C.CString(word)
 	defer C.free(unsafe.Pointer(w))
 	n := C.int(0)
-	var s **C.char
-	b := int(C.check_suggestions(g.hunspell, w, &n, (***C.char)(unsafe.Pointer(&s)))) != 0
+	b := C.int(0)
+	s := C.check_suggestions(g.hunspell, w, &n, &b)
 	l := 0
 	var r []string
-	if(!b) {
+	bo := int(b) == 1
+	if !bo {
 		l = int(n)
-		sl := *(*[]*C.char)(unsafe.Pointer(&s))
+		hdr := reflect.SliceHeader{
+			Data: uintptr(unsafe.Pointer(s)),
+			Len:  l,
+			Cap:  l,
+		}
+		sl := *(*[]*C.char)(unsafe.Pointer(&hdr))
 		for i := 0; i < l; i++ {
 			r = append(r, C.GoString(sl[i]))
 		}
 		defer C.free_list(g.hunspell, (***C.char)(unsafe.Pointer(&s)), n)
 	}
-	return b, l, r
+	return bo, l, r
 }
