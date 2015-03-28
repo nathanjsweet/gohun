@@ -1,7 +1,16 @@
 SOFLAGS=-fPIC
 IDIR=-I./hunspell-distributed/src/hunspell/
-LIB=./lib
+GOOS=$(shell go env GOOS)
+GOARCH=$(shell go env GOARCH)
+GOBLD=$(GOOS)_$(GOARCH)
+GOLIBS=$(GOPATH)/pkg/$(GOBLD)/libs
+GOLIBS2=$(GOPATH)/libs
+LIB=./libs
 OBJ=$(LIB)/obj
+
+default: libhunspell
+	go install ./
+
 libobjects:
 	mkdir -p $(LIB)
 	mkdir -p $(OBJ)
@@ -24,6 +33,13 @@ libhunspell: libobjects
 		$(OBJ)/affixmgr.o $(OBJ)/csutil.o $(OBJ)/dictmgr.o $(OBJ)/filemgr.o \
 		$(OBJ)/hashmgr.o $(OBJ)/hunspell.o $(OBJ)/hunzip.o $(OBJ)/phonet.o \
 		$(OBJ)/replist.o $(OBJ)/strmgr.o $(OBJ)/suggestmgr.o
+	mkdir -p $(GOPATH)/pkg
+	mkdir -p $(GOPATH)/pkg/$(GOBLD)
+	mkdir -p $(GOPATH)/pkg/$(GOBLD)/libs
+	cp $(LIB)/libhunspell.a $(GOLIBS)/libhunspell.a
+	mkdir -p $(GOPATH)/bin
+	mkdir -p $(GOPATH)/bin/libs
+	cp $(LIB)/libhunspell.a $(GOPATH)/bin/libs
 
 test.c: libhunspell
 	$(CXX) $(IDIR) -o ./lib/test ./include/test.c $(LIB)/libhunspell.a

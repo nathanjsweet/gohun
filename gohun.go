@@ -1,9 +1,10 @@
 package gohun
+
 /*
-#cgo LDFLAGS: -L./lib/ -lhunspell -lstdc++
+#cgo LDFLAGS: -L./libs -lhunspell -lstdc++
+//cgo LDFLAGS: -L${SRCDIR}/lib -lhunspell -lstdc++ --- this will be available in the next version of go!
 #include <stdlib.h>
 #include "include/hunspelld.h"
-
 */
 import "C"
 import (
