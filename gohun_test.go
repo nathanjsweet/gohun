@@ -58,3 +58,39 @@ func TestCheckSuggestions(t *testing.T) {
 	}
 }
 
+func TestAddDictionary(t *testing.T) {
+	expected := []string {"color", "co lour", "co-lour", "col our", "col-our", "cornflour",
+		"Colo", "contour", "courtly", "Colbert", "colonize"}
+	g, err := getGohun()
+	if err != nil {
+		t.Error("Failed to initialize Gohun struct:" + err.Error())
+	} else {
+		w := "colour"
+		b, n, sugg := g.CheckSuggestions(w)
+		if b || n != 11 || !compareSlices(sugg, expected) {
+			t.Errorf("AddDictionaryTest CheckSuggestions(\"%s\") pre add failed, it's  it returned: %t, %d, %+v, and expected: %t, %d, %+v",
+				w, b, n, sugg, false, 11, expected)
+			return
+		}
+		file, err := os.Open("./include/dictionaries/en_CA.dic")
+		if err != nil {
+			t.Errorf("AddDictionaryTest Openfile pre add failed:" + err.Error())
+			return
+		}
+		dic, e := ioutil.ReadAll(file)
+		file.Close()
+		if e != nil {
+			t.Errorf("AddDictionaryTest read string from file pre add failed:" + err.Error())
+			return
+		}
+		b = g.AddDictionary(dic);
+		if !b {
+			t.Errorf("AddDictionaryTest AddDictionary(string) failed to add dictionary.")
+			return
+		}
+		b2, _, _ := g.CheckSuggestions(w)
+		if !b2 {
+			t.Errorf("AddDictionaryTest CheckSuggestions(\"%s\") post add failed. Was expecting the word \"%s\" to be correct.", w, w)
+		}
+	}
+}

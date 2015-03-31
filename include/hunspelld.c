@@ -1,6 +1,5 @@
 #include "hunspelld.h"
 #include <hunspell.hxx>
-//#include <stdlib.h>
 
 void* new_hunspell(char* aff, char* dic)
 {
@@ -27,13 +26,11 @@ char** check_suggestions(void* h, char* word, int* num, int* cor)
     return NULL;
   }
   else {
-    //    char*** sugg = (char***)malloc(sizeof(char***));
     char** sugg;
     *num = hun->suggest(&sugg, word);
     *cor = 0;
     return sugg;
-  }
-    
+  } 
 }
 
 int add_dic(void* h, char* dic)
@@ -54,20 +51,26 @@ int remove_word(void* h, char* word)
   return hun->remove(word) == 0 ? 1 : 0;
 }
 
-int stem(void* h, char* word, char*** sugg)
+char** stem(void* h, char* word, int* count)
 {
   Hunspell *hun = (Hunspell*)h;
-  return hun->stem(sugg, word);
+  char** sugg;
+  *count = hun->stem(&sugg, word);
+  return sugg;
 }
 
-int generate(void* h, char* word1, char* word2, char*** sugg)
+char** generate(void* h, char* word1, char* word2, int* count)
 {
   Hunspell *hun = (Hunspell*)h;
-  return hun->generate(sugg, word1, word2);
+  char** sugg;
+  *count = hun->generate(&sugg, word1, word2);
+  return sugg;
 }
 
-int analyze(void* h, char* word, char*** sugg)
+char** analyze(void* h, char* word, int* count)
 {
   Hunspell *hun = (Hunspell*)h;
-  return hun->analyze(sugg, word);
+  char** sugg
+  *count = hun->analyze(&sugg, word);
+  return count;
 }

@@ -7,7 +7,7 @@ OBJ=./obj
 default: libhunspell
 	mkdir -p $(GOPATH)/pkgconfig
 	sed 's#$${GOPATH}#$(GOPATH)#g;s#$${GOOS}#$(shell go env GOOS)#g;s#$${GOARCH}#$(shell go env GOARCH)#g;' \
-		./hunspell.pc > $(GOPATH)/pkgconfig/hunspell.pc
+		./include/hunspell.pc > $(GOPATH)/pkgconfig/hunspell.pc
 	mkdir -p $(GOPATH)/include
 	cp ./include/hunspelld.h $(GOPATH)/include/hunspelld.h
 

@@ -15,9 +15,11 @@ int add_word(void*, char*);
 
 int remove_word(void*, char*);
 
-int stem(void*, char*, char***);
+char** stem(void*, char*, int*);
 
-int generate(void*, char*, char*, char***);
+char** generate(void*, char*, char*, int*);
+
+char** analyze(void*, char*, int*);
   #ifdef __cplusplus
 }
 #endif
