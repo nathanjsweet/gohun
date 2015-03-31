@@ -1,18 +1,17 @@
 SOFLAGS=-fPIC
 IDIR=-I./hunspell-distributed/src/hunspell/
-GOOS=$(shell go env GOOS)
-GOARCH=$(shell go env GOARCH)
-GOBLD=$(GOOS)_$(GOARCH)
-GOLIBS=$(GOPATH)/pkg/$(GOBLD)/libs
-GOLIBS2=$(GOPATH)/libs
-LIB=./libs
-OBJ=$(LIB)/obj
+INCLUDE=$(GOPATH)/include
+LIB=$(GOPATH)/pkg/$(shell go env GOOS)_$(shell go env GOARCH)
+OBJ=./obj
 
 default: libhunspell
-	go install ./
+	mkdir -p $(GOPATH)/pkgconfig
+	sed 's#$${GOPATH}#$(GOPATH)#g;s#$${GOOS}#$(shell go env GOOS)#g;s#$${GOARCH}#$(shell go env GOARCH)#g;' \
+		./hunspell.pc > $(GOPATH)/pkgconfig/hunspell.pc
+	mkdir -p $(GOPATH)/include
+	cp ./include/hunspelld.h $(GOPATH)/include/hunspelld.h
 
 libobjects:
-	mkdir -p $(LIB)
 	mkdir -p $(OBJ)
 	$(CXX) $(SOFLAGS) -c -o $(OBJ)/affentry.o hunspell-distributed/src/hunspell/affentry.cxx
 	$(CXX) $(SOFLAGS) -c -o $(OBJ)/affixmgr.o hunspell-distributed/src/hunspell/affixmgr.cxx	
@@ -28,18 +27,14 @@ libobjects:
 	$(CXX) $(SOFLAGS) -c -o $(OBJ)/suggestmgr.o hunspell-distributed/src/hunspell/suggestmgr.cxx
 
 libhunspell: libobjects
+	mkdir -p $(GOPATH)/pkg
+	mkdir -p $(LIB)
 	$(CXX) $(SOFLAGS) $(IDIR) -c -o $(OBJ)/hunspelld.o ./include/hunspelld.c
 	ar rcs $(LIB)/libhunspell.a $(OBJ)/hunspelld.o $(OBJ)/affentry.o \
 		$(OBJ)/affixmgr.o $(OBJ)/csutil.o $(OBJ)/dictmgr.o $(OBJ)/filemgr.o \
 		$(OBJ)/hashmgr.o $(OBJ)/hunspell.o $(OBJ)/hunzip.o $(OBJ)/phonet.o \
 		$(OBJ)/replist.o $(OBJ)/strmgr.o $(OBJ)/suggestmgr.o
-	mkdir -p $(GOPATH)/pkg
-	mkdir -p $(GOPATH)/pkg/$(GOBLD)
-	mkdir -p $(GOPATH)/pkg/$(GOBLD)/libs
-	cp $(LIB)/libhunspell.a $(GOLIBS)/libhunspell.a
-	mkdir -p $(GOPATH)/bin
-	mkdir -p $(GOPATH)/bin/libs
-	cp $(LIB)/libhunspell.a $(GOPATH)/bin/libs
+	rm -rf $(OBJ)
 
 test.c: libhunspell
 	$(CXX) $(IDIR) -o ./lib/test ./include/test.c $(LIB)/libhunspell.a
