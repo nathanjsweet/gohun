@@ -70,7 +70,7 @@ char** generate(void* h, char* word1, char* word2, int* count)
 char** analyze(void* h, char* word, int* count)
 {
   Hunspell *hun = (Hunspell*)h;
-  char** sugg
+  char** sugg;
   *count = hun->analyze(&sugg, word);
-  return count;
+  return sugg;
 }

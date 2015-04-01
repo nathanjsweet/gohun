@@ -35,6 +35,3 @@ libhunspell: libobjects
 		$(OBJ)/hashmgr.o $(OBJ)/hunspell.o $(OBJ)/hunzip.o $(OBJ)/phonet.o \
 		$(OBJ)/replist.o $(OBJ)/strmgr.o $(OBJ)/suggestmgr.o
 	rm -rf $(OBJ)
-
-test.c: libhunspell
-	$(CXX) $(IDIR) -o ./lib/test ./include/test.c $(LIB)/libhunspell.a
