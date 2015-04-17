@@ -1,9 +1,9 @@
 package gohun
 
 import (
-	"testing"
-	"os"
 	"io/ioutil"
+	"os"
+	"testing"
 )
 
 func getGohun() (*Gohun, error) {
@@ -43,8 +43,8 @@ func compareSlices(f, s []string) bool {
 }
 
 func TestCheckSuggestions(t *testing.T) {
-	expected := []string {"carol","valor","color","cal or","cal-or",
-		"caloric","calorie","chloral","Carlo","Calgary","Caloocan"}
+	expected := []string{"carol", "valor", "color", "cal or", "cal-or",
+		"caloric", "calorie", "chloral", "Carlo", "Calgary", "Caloocan"}
 	g, err := getGohun()
 	if err != nil {
 		t.Error("Failed to initialize Gohun struct:" + err.Error())
@@ -59,7 +59,7 @@ func TestCheckSuggestions(t *testing.T) {
 }
 
 func TestAddDictionary(t *testing.T) {
-	expected := []string {"color", "co lour", "co-lour", "col our", "col-our", "cornflour",
+	expected := []string{"color", "co lour", "co-lour", "col our", "col-our", "cornflour",
 		"Colo", "contour", "courtly", "Colbert", "colonize"}
 	g, err := getGohun()
 	if err != nil {
@@ -83,7 +83,7 @@ func TestAddDictionary(t *testing.T) {
 			t.Errorf("Failed to read string from file pre add:" + err.Error())
 			return
 		}
-		e = g.AddDictionary(dic);
+		e = g.AddDictionary(dic)
 		if e != nil {
 			t.Errorf("AddDictionary(string) failed to add dictionary: " + e.Error())
 			return
@@ -95,9 +95,8 @@ func TestAddDictionary(t *testing.T) {
 	}
 }
 
-
 func TestAddWord(t *testing.T) {
-	expected := []string {"color", "co lour", "co-lour", "col our", "col-our", "cornflour",
+	expected := []string{"color", "co lour", "co-lour", "col our", "col-our", "cornflour",
 		"Colo", "contour", "courtly", "Colbert", "colonize"}
 	g, err := getGohun()
 	if err != nil {
@@ -123,7 +122,7 @@ func TestAddWord(t *testing.T) {
 }
 
 func TestRemoveWord(t *testing.T) {
-	expected := []string {"colon", "dolor", "col or", "col-or", "colored", "recolor",
+	expected := []string{"colon", "dolor", "col or", "col-or", "colored", "recolor",
 		"colorful", "Colorado", "Colon", "colorize"}
 	g, err := getGohun()
 	if err != nil {
@@ -144,12 +143,12 @@ func TestRemoveWord(t *testing.T) {
 		if b2 || n != 10 || !compareSlices(sugg, expected) {
 			t.Errorf("CheckSuggestions(\"%s\") post remove failed, it returned: %t, %d, %+v, and expected: %t, %d, %+v",
 				w, b2, n, sugg, false, 10, expected)
-		}		
+		}
 	}
 }
 
 func TestStem(t *testing.T) {
-	expected := []string {"telling", "tell"}
+	expected := []string{"telling", "tell"}
 	g, err := getGohun()
 	if err != nil {
 		t.Errorf("Failed to initialize gohun object: " + err.Error())
@@ -175,7 +174,7 @@ func TestGenerate(t *testing.T) {
 		if n != nexp || !compareSlices(sugg, expected) {
 			t.Errorf("Generate(\"%s\",\"%s\") failed. Expected: %d, %v; got: %d, %v", w1, w2, nexp, expected, n, sugg)
 		}
-	}	
+	}
 }
 
 func TestAnalyze(t *testing.T) {
@@ -190,5 +189,5 @@ func TestAnalyze(t *testing.T) {
 		if n != nexp || !compareSlices(sugg, expected) {
 			t.Errorf("Analyze(\"%s\") failed. Expected: %d, %v; got: %d, %v", w, nexp, expected, n, sugg)
 		}
-	}	
+	}
 }

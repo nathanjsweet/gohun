@@ -1,4 +1,5 @@
 package gohun
+
 /*
 #cgo pkg-config: hunspell
 #include <stdlib.h>
@@ -6,16 +7,16 @@ package gohun
 */
 import "C"
 import (
-	"unsafe"
+	"errors"
 	"reflect"
 	"runtime"
-	"errors"
 	"sync"
+	"unsafe"
 )
 
-type Gohun struct{
+type Gohun struct {
 	hunspell unsafe.Pointer
-	lock *sync.RWMutex
+	lock     *sync.RWMutex
 }
 
 func finalizer(g *Gohun) {
@@ -24,7 +25,7 @@ func finalizer(g *Gohun) {
 
 func NewGohun(aff, dic []byte) *Gohun {
 	g := new(Gohun)
-	g.hunspell = C.new_hunspell((*C.char)(unsafe.Pointer(&aff[0])),(*C.char)(unsafe.Pointer(&dic[0])))
+	g.hunspell = C.new_hunspell((*C.char)(unsafe.Pointer(&aff[0])), (*C.char)(unsafe.Pointer(&dic[0])))
 	g.lock = new(sync.RWMutex)
 	runtime.SetFinalizer(g, finalizer)
 	return g
@@ -59,9 +60,9 @@ func (g *Gohun) CheckSuggestions(word string) (bool, int, []string) {
 
 func (g *Gohun) AddDictionary(dictionary []byte) error {
 	g.lock.Lock()
-	n := C.add_dic(g.hunspell, (*C.char)(unsafe.Pointer(&dictionary[0])));
+	n := C.add_dic(g.hunspell, (*C.char)(unsafe.Pointer(&dictionary[0])))
 	g.lock.Unlock()
-	var err error 
+	var err error
 	if int(n) != 1 {
 		err = errors.New("Failed to add dictionary to gohun object.")
 	}
