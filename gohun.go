@@ -13,7 +13,8 @@ import (
 	"sync"
 	"unsafe"
 )
-
+// Do not try to initialize the Gohun struct yourself,
+// always use NewGohun, as a finalizer is set on the struct.
 type Gohun struct {
 	hunspell unsafe.Pointer
 	lock     *sync.RWMutex
@@ -22,7 +23,11 @@ type Gohun struct {
 func finalizer(g *Gohun) {
 	C.delete_hunspell(g.hunspell)
 }
-
+// Initializing gohun is very easy, simply add the byte arrays of an affix and 
+// dictionary file as the first two arguments of the constructor. The mechanics 
+// of the dictionaries gohun processes is fairly simple to understand. Gohun ships 
+// with US english and Canadian English (look in the examples folder), but tons 
+// of languages are available for free at open office, http://extensions.services.openoffice.org/dictionary. 
 func NewGohun(aff, dic []byte) *Gohun {
 	g := new(Gohun)
 	g.hunspell = C.new_hunspell((*C.char)(unsafe.Pointer(&aff[0])), (*C.char)(unsafe.Pointer(&dic[0])))
@@ -30,7 +35,8 @@ func NewGohun(aff, dic []byte) *Gohun {
 	runtime.SetFinalizer(g, finalizer)
 	return g
 }
-
+// CheckSuggestions checks to see if a word is correct and returns an array
+// of possible correct words if it is not.
 func (g *Gohun) CheckSuggestions(word string) (bool, int, []string) {
 	w := C.CString(word)
 	defer C.free(unsafe.Pointer(w))
@@ -57,7 +63,9 @@ func (g *Gohun) CheckSuggestions(word string) (bool, int, []string) {
 	}
 	return bo, l, r
 }
-
+// AddDictionary allows you to add another dictionary, during run time,
+// To a current Gohun dictionary (a custom dictionary, for example). This
+// is ephemeral.
 func (g *Gohun) AddDictionary(dictionary []byte) error {
 	g.lock.Lock()
 	n := C.add_dic(g.hunspell, (*C.char)(unsafe.Pointer(&dictionary[0])))
@@ -68,7 +76,8 @@ func (g *Gohun) AddDictionary(dictionary []byte) error {
 	}
 	return err
 }
-
+// AddWord allows you to add a custom or previously undefined word to the
+// current Gohun dictionary, ephemerally.
 func (g *Gohun) AddWord(word string) bool {
 	w := C.CString(word)
 	defer C.free(unsafe.Pointer(w))
@@ -77,7 +86,8 @@ func (g *Gohun) AddWord(word string) bool {
 	g.lock.Unlock()
 	return int(b) == 1
 }
-
+// RemoveWrod allows you to remove a defined word from the
+// current Gohun dictionary, ephemerally.
 func (g *Gohun) RemoveWord(word string) bool {
 	w := C.CString(word)
 	defer C.free(unsafe.Pointer(w))
@@ -86,7 +96,8 @@ func (g *Gohun) RemoveWord(word string) bool {
 	g.lock.Unlock()
 	return int(b) == 1
 }
-
+// Stem will return a list of all possible words that a given
+// valid word exists in.
 func (g *Gohun) Stem(word string) (int, []string) {
 	w := C.CString(word)
 	defer C.free(unsafe.Pointer(w))
@@ -110,7 +121,11 @@ func (g *Gohun) Stem(word string) (int, []string) {
 	}
 	return l, res
 }
-
+// Generate allows returns the variation of a passed word,
+// by matching it to the morphological structure of a second word.
+// For example, if "telling" and "ran" were passed, "told" would
+// be returned. It is possible to receive back the first word as the
+// correct result.
 func (g *Gohun) Generate(word1, word2 string) (int, []string) {
 	w1 := C.CString(word1)
 	w2 := C.CString(word2)
@@ -136,7 +151,8 @@ func (g *Gohun) Generate(word1, word2 string) (int, []string) {
 	}
 	return l, res
 }
-
+// Analyze returns a custom array of the morphological information and possibilities
+// of a given word. Consult the hunspell docs for further understanding.
 func (g *Gohun) Analyze(word string) (int, []string) {
 	w := C.CString(word)
 	defer C.free(unsafe.Pointer(w))
