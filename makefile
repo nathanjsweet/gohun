@@ -5,8 +5,6 @@ LIB=./libs
 OBJ=./obj
 
 default: libhunspell
-	mkdir -p $(GOPATH)/include
-	cp ./include/hunspelld.h $(GOPATH)/include/hunspelld.h
 
 libobjects:
 	mkdir -p $(OBJ)
