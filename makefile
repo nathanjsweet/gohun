@@ -23,7 +23,7 @@ libobjects:
 
 libhunspell: libobjects
 	mkdir -p $(LIB)
-	$(CXX) -fPIC -flto $(IDIR) -c -O3 -o $(OBJ)/hunspelld.o ./include/hunspelld.c
+	$(CXX) -fPIC -shared $(IDIR) -c -O3 -o $(OBJ)/hunspelld.o ./include/hunspelld.c
 	ar rcs $(LIB)/libhunspell.a $(OBJ)/hunspelld.o $(OBJ)/affentry.o \
 		$(OBJ)/affixmgr.o $(OBJ)/csutil.o $(OBJ)/dictmgr.o $(OBJ)/filemgr.o \
 		$(OBJ)/hashmgr.o $(OBJ)/hunspell.o $(OBJ)/hunzip.o $(OBJ)/phonet.o \
