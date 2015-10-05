@@ -64,11 +64,11 @@ func TestIsCorrect(t *testing.T) {
 		t.Error("Failed to initialize Gohun struct:" + err.Error())
 	} else {
 		w := "calor"
-		if g.IsCorrect(w){
+		if g.IsCorrect(w) {
 			t.Errorf("IsCorrect(\"%s\") failed, it returned true when it should have returned false.", w)
 		}
 		w = "color"
-		if !g.IsCorrect(w){
+		if !g.IsCorrect(w) {
 			t.Errorf("IsCorrect(\"%s\") failed, it returned false when it should have returned true.", w)
 		}
 	}
