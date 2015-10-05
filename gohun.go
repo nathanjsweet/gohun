@@ -1,9 +1,9 @@
 package gohun
 
 /*
-#cgo pkg-config: hunspell
+#cgo LDFLAGS: -L${SRCDIR}/libs -lhunspell -lstdc++ -lm
 #include <stdlib.h>
-#include <hunspelld.h>
+#include "include/hunspelld.h"
 */
 import "C"
 import (

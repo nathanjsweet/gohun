@@ -1,13 +1,10 @@
 OBJFlAGS=-fPIC
 IDIR=-I./hunspell-distributed/src/hunspell/
 INCLUDE=$(GOPATH)/include
-LIB=$(GOPATH)/pkg/$(shell go env GOOS)_$(shell go env GOARCH)
+LIB=./libs
 OBJ=./obj
 
 default: libhunspell
-	mkdir -p $(GOPATH)/pkgconfig
-	sed 's#$${GOPATH}#$(GOPATH)#g;s#$${GOOS}#$(shell go env GOOS)#g;s#$${GOARCH}#$(shell go env GOARCH)#g;' \
-		./include/hunspell.pc > $(GOPATH)/pkgconfig/hunspell.pc
 	mkdir -p $(GOPATH)/include
 	cp ./include/hunspelld.h $(GOPATH)/include/hunspelld.h
 
@@ -27,7 +24,6 @@ libobjects:
 	$(CXX) $(OBJFLAGS) -c -O3 -o $(OBJ)/suggestmgr.o hunspell-distributed/src/hunspell/suggestmgr.cxx
 
 libhunspell: libobjects
-	mkdir -p $(GOPATH)/pkg
 	mkdir -p $(LIB)
 	$(CXX) -fPIC -flto $(IDIR) -c -O3 -o $(OBJ)/hunspelld.o ./include/hunspelld.c
 	ar rcs $(LIB)/libhunspell.a $(OBJ)/hunspelld.o $(OBJ)/affentry.o \
