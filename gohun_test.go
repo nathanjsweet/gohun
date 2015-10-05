@@ -58,6 +58,22 @@ func TestCheckSuggestions(t *testing.T) {
 	}
 }
 
+func TestIsCorrect(t *testing.T) {
+	g, err := getGohun()
+	if err != nil {
+		t.Error("Failed to initialize Gohun struct:" + err.Error())
+	} else {
+		w := "calor"
+		if g.IsCorrect(w){
+			t.Errorf("IsCorrect(\"%s\") failed, it returned true when it should have returned false.", w)
+		}
+		w = "color"
+		if !g.IsCorrect(w){
+			t.Errorf("IsCorrect(\"%s\") failed, it returned false when it should have returned true.", w)
+		}
+	}
+}
+
 func TestAddDictionary(t *testing.T) {
 	expected := []string{"color", "co lour", "co-lour", "col our", "col-our", "cornflour",
 		"Colo", "contour", "courtly", "Colbert", "colonize"}

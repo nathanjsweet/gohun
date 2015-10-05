@@ -63,6 +63,17 @@ func (g *Gohun) CheckSuggestions(word string) (bool, int, []string) {
 	}
 	return bo, l, r
 }
+
+// IsCorrect returns true if a word is spelled correctly.
+func (g *Gohun) IsCorrect(word string) bool {
+	w := C.CString(word)
+	defer C.free(unsafe.Pointer(w))
+	g.lock.RLock()
+	i := C.is_correct(g.hunspell, w)
+	g.lock.RUnlock()
+	return int(i) != 0
+}
+
 // AddDictionary allows you to add another dictionary, during run time,
 // To a current Gohun dictionary (a custom dictionary, for example). This
 // is ephemeral.
@@ -121,7 +132,7 @@ func (g *Gohun) Stem(word string) (int, []string) {
 	}
 	return l, res
 }
-// Generate allows returns the variation of a passed word,
+// Generate returns the variation of a passed word,
 // by matching it to the morphological structure of a second word.
 // For example, if "telling" and "ran" were passed, "told" would
 // be returned. It is possible to receive back the first word as the

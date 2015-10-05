@@ -33,6 +33,11 @@ char** check_suggestions(void* h, char* word, int* num, int* cor)
   } 
 }
 
+int is_correct(void* h, char* word)
+{
+  return ((Hunspell*)h)->spell(word);
+}
+
 int add_dic(void* h, char* dic)
 {
   Hunspell *hun = (Hunspell*)h;

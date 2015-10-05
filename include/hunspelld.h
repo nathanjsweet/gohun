@@ -9,6 +9,8 @@ void free_list(void*, char***, int);
 
 char** check_suggestions(void*, char*, int*, int*);
 
+  int is_correct(void*, char*);
+
 int add_dic(void*, char*);
 
 int add_word(void*, char*);
