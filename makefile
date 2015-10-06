@@ -6,7 +6,6 @@ OBJ=./obj
 
 default: libhunspell
 	go install gohun
-	rm -rf $(LIB)
 libobjects:
 	mkdir -p $(OBJ)
 	$(CXX) $(OBJFLAGS) -c -O3 -o $(OBJ)/affentry.o hunspell-distributed/src/hunspell/affentry.cxx
