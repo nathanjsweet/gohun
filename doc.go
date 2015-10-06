@@ -9,5 +9,9 @@ You must have pkg-config installed, and you have to include $GOPATH/pkgconfig in
 	cd ./gohun
 	make
 	go install gohun
+
+Warning
+
+Gohun requires golang 1.5+ to build, refer to the repository reamde for details on why this is the case.
 */
 package gohun
