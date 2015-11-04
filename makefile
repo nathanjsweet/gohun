@@ -4,8 +4,6 @@ OBJDIR=./obj
 
 default: lib/libhunspell.a
 	go install ./
-	rm -rf obj
-	rm -rf lib
 obj/%.o: hunspell-distributed/src/hunspell/
 	mkdir -p $(OBJDIR)
 	$(CXX) $(OBJFLAGS) -c -O3 -o $(OBJDIR)/affentry.o hunspell-distributed/src/hunspell/affentry.cxx
