@@ -1,7 +1,7 @@
 package gohun
 
 /*
-#cgo LDFLAGS: -L${SRCDIR}/libs -lhunspell -lstdc++ -lm
+#cgo LDFLAGS: -L${SRCDIR}/lib -lhunspell -lstdc++ -lm
 #include <stdlib.h>
 #include "include/hunspelld.h"
 */
