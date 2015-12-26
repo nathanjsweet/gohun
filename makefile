@@ -23,3 +23,4 @@ obj/%.o: hunspell-distributed/src/hunspell/
 lib/libhunspell.a: obj/%.o
 	mkdir -p ./lib
 	ar rcs $@ $(wildcard obj/*.o)
+
